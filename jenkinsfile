@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout Code') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/BOMAURIEL/Ansible-class.git']]])
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'chmod 400 ./newkey.pem'
+                sh '''
+                ansible-playbook deploy.yaml -i hosts.ini
+                '''
+            }
+        }
+    }
+}
